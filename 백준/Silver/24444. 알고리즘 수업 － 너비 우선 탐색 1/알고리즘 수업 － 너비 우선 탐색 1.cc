@@ -5,7 +5,6 @@
 using namespace std;
 vector<vector<int>> graph(100001);
 int visited[100001] = {0,};
-int willvisit[100001] = {0,};
 int queue[200001];
 int head = 0, rear = 0;
 
@@ -24,7 +23,6 @@ void bfs(int N) {
 		head++;
 		arr[r] = ++cnt;//방문 순서 저장.
 		//printf("방문 %d cnt %d\n", r, cnt);
-		
 		//printf("cnt:  %d\n", cnt);
 		j = 0;	
 		//방문한 노드와 연결된 노드들을 queue에 담음
@@ -32,12 +30,8 @@ void bfs(int N) {
 		{
 			if (visited[graph[r][j]] != 1) //아직 안간 노드인지 확인
 			{
-				if(willvisit[graph[r][j]]!= 1) //큐에 저장되어있는 노드인지 확인
-				{
-					queue[rear] = graph[r][j];
-					rear++;
-					willvisit[graph[r][j]] = 1;//방문할 노드인지 기록.
-				}
+				queue[rear++] = graph[r][j];
+				visited[graph[r][j]] = 1;
 			}
 			j++;
 		}
@@ -68,7 +62,7 @@ int main() {
 	//첫번째 노드 대입하면서 시작. 	
 	queue[rear] = R;
 	rear++;
-	willvisit[R]  = 1;
+	visited[R] = 1;
 	bfs(N);
 	return 0;
 }
