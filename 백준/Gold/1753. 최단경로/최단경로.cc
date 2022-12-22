@@ -31,20 +31,17 @@ void dijkstra()
     {
         int dist = -1*pq.top().first;//가장 가까운 노드를 꺼냄. -> 연결된 노드들을 다 넣음.
         int cur = pq.top().second;
-        //printf("cur , dist  = %d %d\n", cur, dist);
-        //printf("size: %d\n", pq.size());
+
         pq.pop();
         if(d[cur] < dist)// 꺼냈던 가장 가까운 노드가 이미 최소경로보다 더 큰 경우라면 패스해버린다.
             continue;
-        //printf("%d node size: %d\n", cur, graph[cur].size());
         for(int i=0;i<graph[cur].size();i++)
         {
             int ndist = graph[cur][i].first + dist;
             int ncur = graph[cur][i].second;
-            //printf("%d: %d vs %d\n", ncur, d[ncur],ndist );
+
             if(d[ncur] > ndist)
             {
-                //printf("%d win\n", ndist);
                 pq.push(make_pair(-ndist, ncur));
                 d[ncur] = ndist;
             }
@@ -59,7 +56,6 @@ void print_dis()
 {
     for(int i =1;i<=N;i++)
     {
-        //printf("%d: ",i);
         if(d[i] == INF)
             printf("INF\n");
         else
