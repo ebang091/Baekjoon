@@ -38,9 +38,8 @@ void BFS()
             {
                 if(dis[next_r][next_c] > dis[r][c] + 1) {
                     dis[next_r][next_c] = dis[r][c] + 1;
-                    //printf("%d %d - dis %d\n", next_r, next_c, dis[next_r][next_c]);
-                }
                 Q.push(make_pair(next_r,next_c));
+                }
             }
         }
     }
@@ -64,7 +63,6 @@ void find()
         for(int j=1;j<=M;j++)
         {
             if(map[i][j] == 1) {
-                //printf("%d %d BFS\n", i,j);
                 dis[i][j] = 0;
                 Q.push(make_pair(i,j));
             }
