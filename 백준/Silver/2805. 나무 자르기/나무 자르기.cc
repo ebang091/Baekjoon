@@ -6,7 +6,7 @@
  */
 using namespace std;
 vector <int> t;
-vector <int> number;
+
 
 using namespace std;
 long long tree, target;
@@ -39,17 +39,7 @@ long long  find(long long l, long long r)
             r = mid-1;
 
     }
-//    cout << ret << "\n";
     return ret;
-}
-
-void init_number()
-{
-    for (int i=0;i<=MAX;i++) {
-        number[i] = i;
-//        printf("%d ", number[i]);
-    }
-    printf("\n");
 }
 
 int main()
@@ -63,15 +53,6 @@ int main()
         if(MAX < t[i])
             MAX = t[i];
     }
-//    number.resize(MAX+1);
-//    init_number();
-//    cout << (MAX+MIN)/2 ;
-
     printf("%lld\n", find(0, MAX));
-
-
-
-
-
 }
 
