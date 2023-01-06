@@ -1,30 +1,77 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+
+/*
+ *  A+B, A-B, A*B, A/B(몫), A%B(나머지)를 출력하는 프로그램을 작성하시오.
+ */
+using namespace std;
+vector <int> t;
+vector <int> number;
 
 using namespace std;
+long long tree, target;
+long long MIN = 2147483647, MAX = 0;
 
-int n, m;
-vector<int> namu;
-
-long long binary(long long l, long long r) {
-	long long med = (l + r) / 2;
-	if (l > r || !med) return med;
-	long long ret = 0;
-	for (int i = 0; i < n; i++)
-		if (namu[i] >= med)
-			ret += namu[i] - med;
-	if (ret < m) return binary(l, med - 1);
-	return binary(med + 1, r);
+long long  cutted(int height)
+{
+    long long  ret= 0;
+    for(int i=1;i<=tree;i++)
+    {
+        if(t[i] > height)
+            ret += t[i] - height;
+    }
+    return ret;
 }
 
-int main() {
-	cin.tie(0);
-	ios::sync_with_stdio(0);
-	cin >> n >> m;
-	namu.resize(n);
-	for (int i = 0; i < n; i++) cin >> namu[i];
-	sort(namu.begin(), namu.end());
-	cout << binary(0, namu[n - 1]) << endl;
-	return 0;
+long long  find(long long l, long long r)
+{
+    long long mid;
+    long long ret = 0;
+    while(l<=r)
+    {
+        mid = (l+r)/2;
+        if(cutted(mid) >= target)
+        {
+            ret = mid;
+            l = mid+1;
+        }
+        else
+            r = mid-1;
+
+    }
+//    cout << ret << "\n";
+    return ret;
 }
+
+void init_number()
+{
+    for (int i=0;i<=MAX;i++) {
+        number[i] = i;
+//        printf("%d ", number[i]);
+    }
+    printf("\n");
+}
+
+int main()
+{
+    cin >> tree >> target;
+    t.resize(tree + 1, 0);
+    for(int i=1;i<=tree;i++) {
+        cin >> t[i];
+        if(MIN > t[i])
+            MIN = t[i];
+        if(MAX < t[i])
+            MAX = t[i];
+    }
+//    number.resize(MAX+1);
+//    init_number();
+//    cout << (MAX+MIN)/2 ;
+
+    printf("%lld\n", find(0, MAX));
+
+
+
+
+
+}
+
