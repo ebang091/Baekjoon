@@ -1,79 +1,82 @@
-//
-// Created by Eun jung Bang on 2022/12/22.
-//
-
-#include <vector>
+#include <stdio.h>
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <math.h>
 #include <queue>
-#include <utility>
-#define INF 198767654
+
+int V,E,K;
 using namespace std;
+#define MAX 300001
+#define INF 1987654321
 
-int N,M,S;
-vector<pair<int, int > > graph[20001];
-int d[20001];
+vector <vector<pair<int, int>> > g(MAX); //인덱스: 정점, <맞은편 정점, 가중치>
+long long dist[MAX];
 
-void init()
+
+void input()
 {
-    for(int i =1;i<=N;i++)
-        d[i] = INF;
+	int u, v, w;
+	for (int i = 0; i < E; i++)
+	{
+		cin >> u >> v >> w;
+		g[u].push_back({ w, v });
+	}
 }
+
+
 
 void dijkstra()
 {
-    init(); //거리를 일단 최대로 지정
-    priority_queue <pair<int, int> >pq;//node, distance
-    pair<int, int>a;
-    a = make_pair(0, S);
-    pq.push(a);
-    d[S] = 0;
-    while(!pq.empty())
-    {
-        int dist = -1*pq.top().first;//가장 가까운 노드를 꺼냄. -> 연결된 노드들을 다 넣음.
-        int cur = pq.top().second;
-
-        pq.pop();
-        if(d[cur] < dist)// 꺼냈던 가장 가까운 노드가 이미 최소경로보다 더 큰 경우라면 패스해버린다.
-            continue;
-        for(int i=0;i<graph[cur].size();i++)
-        {
-            int ndist = graph[cur][i].first + dist;
-            int ncur = graph[cur][i].second;
-
-            if(d[ncur] > ndist)
-            {
-                pq.push(make_pair(-ndist, ncur));
-                d[ncur] = ndist;
-            }
-        }
-
-    }
-
-
+	priority_queue <pair<int, int>> PQ;
+	//거리 배열 초기화
+	for (int i = 1; i <= V; i++)
+	{
+		dist[i] = INF;
+	}
+	//시작 점
+	PQ.push(make_pair(0, K));
+	dist[K] = 0;
+	while (!PQ.empty())
+	{
+		long long nowcost = -PQ.top().first;
+		long long now = PQ.top().second;
+		PQ.pop();
+		for (int i = 0; i < g[now].size(); i++)
+		{
+			long long nextcost = nowcost + g[now][i].first;
+			int next = g[now][i].second;
+			if (nextcost < dist[next])
+			{
+				dist[next] = nextcost;
+				PQ.push({ -nextcost  ,next});
+			}
+		}
+	}
 }
 
-void print_dis()
-{
-    for(int i =1;i<=N;i++)
-    {
-        if(d[i] == INF)
-            printf("INF\n");
-        else
-            printf("%d\n",d[i]);
-    }
 
+void print_distance()
+{
+	for (int i = 1; i <= V; i++)
+	{
+		if (dist[i] == INF)
+			cout << "INF\n";
+		else
+			cout << dist[i] << "\n";
+	}
 }
 
 int main()
 {
-    int u,v,w;
-    scanf("%d %d", &N, &M);
-    scanf("%d", &S);
-
-    for(int i =0;i<M;i++) {
-        scanf("%d %d %d", &u, &v, &w);
-        graph[u].push_back(make_pair(w,v));
-    }
-    dijkstra();
-    print_dis();
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	cin >> V >> E;
+	cin >> K;
+	input();
+	dijkstra();
+	print_distance();
+	
 }
+
+
