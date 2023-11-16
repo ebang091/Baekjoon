@@ -3,21 +3,6 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.*;
-
-//R L B T 
-//RT LT RB LB
-//킹을 주어진 입력대로 움직이되,
-        //이동하려는 곳에 돌이 있으면 밀린다. 
-        //돌이 밀려날 때, 판을 벗어나면 킹은 움직이지 않는다. 
-        //돌이 밀려나지 않아도 킹이 판을 벗어나려고 할 때 킹은 움직이지 않는다.
-
-/*
-C1 B1 3
-L
-T
-LB
-
-*/
 public class Main {
     
     private static class Position{
@@ -32,10 +17,17 @@ public class Main {
         }
 
         Position(){}
+
+        public void setPosition(Position e){
+            this.row = e.row;
+            this.col = e.col;
+        }
+
         public void setPosition(int row, int col){
             this.row = row;
             this.col = col;
         }
+
 
         public boolean samePosition(Position e){
             return this.col == e.col && this.row == e.row;
@@ -80,16 +72,14 @@ public class Main {
 
     }
 
+    private static int commandSize = 0;
     private static Position King = new Position();
     private static Position Stone = new Position();
-    private static String direction;
-    private static int directionY;
-    private static int directionX;
-
+    private static Position[] moveDirections = new Position[commandSize + 1];
+    private static int current = 0;
     
-    private static boolean Cango(int y, int x){
-        // System.out.println("Cango check" + y + " " + x);
-        return 1 <= x && x <= 8 && 1 <= y && y <= 8;
+    private static boolean canGo(Position pos){
+        return 1 <= pos.row && pos.row <= 8 && 1 <= pos.col && pos.col <= 8;
     }
 
     private static int charToInt(char c){
@@ -106,57 +96,67 @@ public class Main {
         return str;
     }
 
-    private static void move(int y, int x){
-        King.setPosition(y,x);
+    private static void move(Position king, Position stone){
+        King.setPosition(king);
         if(King.samePosition(Stone)){
-            Stone.setPosition(Stone.row + directionY, Stone.col + directionX);
-            // System.out.println("after stone move" + Stone);
-        }
-            
-    }
-    private static boolean samePosition(int rx, int ry, int cx, int cy){
-        return rx == cx && ry == cy;
+            Stone.setPosition(stone);
+        }   
     }
 
-    public static void main(String[] args) throws IOException {
-        
+    private static void input() throws IOException{
+
         BufferedReader bfn = new BufferedReader(new InputStreamReader(System.in));
         String input = bfn.readLine();
         String[] inputs = input.split(" ");
         King.setPosition(inputs[0].charAt(1) - '0', charToInt(inputs[0].charAt(0)));
         Stone.setPosition(inputs[1].charAt(1) - '0', charToInt(inputs[1].charAt(0)));
 
-        int commands = Integer.parseInt(inputs[2]);
-        for(int command = 0; command < commands; command++){
-        
-           direction = bfn.readLine();
+        moveDirections = new Position[10001];
 
-            //setter
-           directionY = Direction.getDirectionY(direction);
-           directionX = Direction.getDirectionX(direction);
-           int nextY = King.row + directionY;
-           int nextX = King.col + directionX;
-            boolean Cango = false;
-            if(Cango(nextY, nextX)){
-                Cango = true;
-                
-                if(samePosition(nextY, nextX, Stone.row, Stone.col)){
-                    int stoneY = Stone.row + directionY;
-                    int stoneX = Stone.col + directionX;
-                    //돌도 갈 수 있는 곳인지 확인
-                    if(!Cango(stoneY, stoneX))
-                        Cango = false;
+        commandSize = Integer.parseInt(inputs[2]);
+
+
+        //이동 방향 저장
+        for(int command = 0; command < commandSize; command++){
+           String direction = bfn.readLine();
+           moveDirections[current++] = new Position(Direction.getDirectionY(direction), Direction.getDirectionX(direction));
+        }
+    }
+
+    private static void solve(){
+        current = 0;
+        while (current < commandSize){
+
+            Position moveDirection = moveDirections[current++];
+            Position nextKing = new Position(King.row + moveDirection.row, King.col + moveDirection.col);
+            
+            boolean canGoCheck = false;
+            Position nextStone = new Position(Stone.row + moveDirection.row, Stone.col + moveDirection.col);
+            if(canGo(nextKing)){
+                canGoCheck = true;
+                if(nextKing.samePosition(Stone)){
+                    if(!canGo(nextStone))
+                        canGoCheck = false;
                 }
             }
 
-            if(Cango){
-                move(nextY, nextX);
-                // System.out.println("After move: " + King);
-            } 
+            if(canGoCheck)
+                move(nextKing, nextStone);
+
         }
+    }
+    
+
+    private static void output(){
+                  
         System.out.println(King);
         System.out.println(Stone);
     }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solve();
+        output();
+    }
    
-    
  }
